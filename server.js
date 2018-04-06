@@ -9,12 +9,14 @@ const bodyParser = require('body-parser');
 const fileUpload = require('express-fileupload');
 const winston = require('winston');
 const app = express();
+const schedule = require('node-schedule');
 
 const VisitorInfo = require('./models/totalVisitorCount');
 
 module.exports = app;
 
 const logHome = process.env.LOG || '.';
+const blogFilePath = process.env.BLOG_FILE_PATH || '.';
 
 require('winston-daily-rotate-file');
 
@@ -40,8 +42,62 @@ const gitclient = new GitHub({
 
 global.git = {
     needSyncGit: process.env.SYNC_TO_GIT || true,
-    repo: gitclient.getRepo('isyours', 'blogs'),
-    gist: gitclient.getGist(process.env.GIT_GIST_ID || 'd9ed5ce64e2cfa0e908d947e60b54343')
+    repo: gitclient.getRepo('chlde', 'blogs'),
+    gist: gitclient.getGist(process.env.GIT_GIST_ID || '92c0366c878f9417c1a1e3cea3b903c0')
+};
+
+// sync every five minutes
+schedule.scheduleJob('*/5 * * * *', function(fireDate){
+    listFileInPath('', fireDate);
+});
+
+const blogFileSHACache = {};
+
+const listFileInPath = function (path, dateTime) {
+    global.git.repo.getContents('master', path, true, function (err, res) {
+        if (err) {
+            global.logger.error('list file in path fail, path is:' + path + ', time is:' + dateTime, err);
+            return;
+        }
+        if (res instanceof Array) {
+            res.forEach((item) => {
+                if (item.type === 'dir') {
+                    let localPath = blogFilePath + '/' + item.path;
+                    if (!fs.existsSync(localPath)) {
+                        fs.mkdirSync(localPath, '0777');
+                    }
+                    listFileInPath(item.path, dateTime);
+                } else if (item.type === 'file') {
+                    if (item.name === '.gitignore') {
+                        return;
+                    } else {
+                        if (item.sha) {
+                            if (blogFileSHACache[item.path] === item.sha) {
+                                return;
+                            } else {
+                                blogFileSHACache[item.path] = item.sha;
+                            }
+                        }
+                        saveOrUpdateBlogFile(item.path);
+                    }
+                }
+            });
+        }
+    })
+};
+
+const saveOrUpdateBlogFile = function (path, content) {
+    global.git.repo.getContents('master', path, true, function (err, res) {
+        let localPath = blogFilePath + '/' + path;
+        fs.writeFile(localPath, content, function (err) {
+            if (err) {
+                global.logger.error('Sync blog to local file:' + path, err);
+                delete blogFileSHACache[path];
+                return;
+            }
+            global.logger.info('Sync blog to local success:' + path);
+        });
+    });
 };
 
 global.git.gist.listComments(function (err, res) {
