@@ -47,7 +47,7 @@ global.git = {
 };
 
 // sync every five minutes
-schedule.scheduleJob('*/5 * * * *', function(fireDate){
+schedule.scheduleJob('*/1 * * * *', function(fireDate){
     listFileInPath('', fireDate);
 });
 
@@ -86,10 +86,10 @@ const listFileInPath = function (path, dateTime) {
     })
 };
 
-const saveOrUpdateBlogFile = function (path, content) {
+const saveOrUpdateBlogFile = function (path) {
     global.git.repo.getContents('master', path, true, function (err, res) {
         let localPath = blogFilePath + '/' + path;
-        fs.writeFile(localPath, content, function (err) {
+        fs.writeFile(localPath, res, function (err) {
             if (err) {
                 global.logger.error('Sync blog to local file:' + path, err);
                 delete blogFileSHACache[path];
