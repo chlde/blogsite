@@ -64,8 +64,8 @@ export const blogTypeMapping = {
         name: 'tech',
         value: 1
     },
-    food: {
-        name: 'food',
+    cook: {
+        name: 'cook',
         value: 2
     },
     religion: {

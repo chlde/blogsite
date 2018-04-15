@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 
 global.blogTypeMapping = {
     tech: 1,
-    food: 2,
+    cook: 2,
     religion: 3,
     life: 4
 };

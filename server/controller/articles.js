@@ -7,6 +7,7 @@
 const { wrap: async } = require('co');
 const innerAsync = require('async');
 const config = require('../config/env/development');
+const fs = require('fs');
 
 const Blog = require('../../models/blog');
 const BlogMessage = require('../../models/blogMessage');
@@ -82,6 +83,19 @@ exports.getBlogByTitle = async(function* (req, res, next) {
     let blogTitle = req.params.blogTitle + '';
     Blog.findOne({blogTitle: blogTitle}, function(err,obj) {
         if (err) return next(err);
+        let localPath = global.blogFileBasePath;
+        const typeMapping = global.blogTypeMapping;
+        if (typeMapping) {
+            for (let key in typeMapping) {
+                if (typeMapping[key] === obj.blogType) {
+                    localPath += '/' + key + '/';
+                    break;
+                }
+            }
+        }
+        localPath += blogTitle + '.md';
+        let blogContent = fs.readFileSync(localPath, {encoding: 'utf-8'});
+        obj.blogMarkdownContent = blogContent;
         res.send({
             blogInfo: obj
         })

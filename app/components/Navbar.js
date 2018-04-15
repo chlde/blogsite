@@ -117,7 +117,7 @@ class Navbar extends React.Component {
                             <BottomNavigationItem
                                 label="玉膳房"
                                 icon={menuIcon}
-                                onTouchTap={() => this.buttonClickAction(blogTypeMapping.food.name)}
+                                onTouchTap={() => this.buttonClickAction(blogTypeMapping.cook.name)}
                                 style={this.state.styleConfig.menuItemFontStyle}
                             />
                             <BottomNavigationItem

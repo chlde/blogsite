@@ -18,6 +18,8 @@ module.exports = app;
 const logHome = process.env.LOG || '.';
 const blogFilePath = process.env.BLOG_FILE_PATH || '.';
 
+global.blogFileBasePath = blogFilePath;
+
 require('winston-daily-rotate-file');
 
 var transport = new winston.transports.DailyRotateFile({

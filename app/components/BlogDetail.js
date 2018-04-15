@@ -8,6 +8,7 @@ import BlogTag from './BlogTag';
 import BlogMessageBoard from './BlogMessageBoard';
 import BlogAnchor from './BlogAnchor';
 import { StickyContainer, Sticky } from 'react-sticky';
+const showdownHighlight = require("showdown-highlight");
 
 
 class BlogDetail extends React.Component {
@@ -32,6 +33,10 @@ class BlogDetail extends React.Component {
                 blogInfo: {}
             };
         }
+
+        this.converter =  new showdown.Converter({
+            extensions: [showdownHighlight]
+        });
     }
 
     componentDidMount() {
@@ -82,6 +87,8 @@ class BlogDetail extends React.Component {
             // color: '#79829a'
             color: 'black'
         };
+
+        const rawHtml = this.converter.makeHtml(this.state.blogInfo.blogMarkdownContent);
 
         return (
             <div>
@@ -134,7 +141,7 @@ class BlogDetail extends React.Component {
                                         marginTop: 15
                                     }}/>
                                     <div style={contentStyle}
-                                         dangerouslySetInnerHTML={{__html: this.state.blogInfo.blogContent}}></div>
+                                         dangerouslySetInnerHTML={{__html: rawHtml}}></div>
                                     <Divider style={{
                                         backgroundColor: '#2b2b2b',
                                         marginTop: 15
