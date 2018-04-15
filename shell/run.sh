@@ -1,5 +1,5 @@
 #!/bin/bash
-cd ${BLOG_HOME}
+cd /home/web/myblog/blogsite
 git pull
 bower install
 npm install
