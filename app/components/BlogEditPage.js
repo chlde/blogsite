@@ -144,16 +144,16 @@ class BlogEditPage extends React.Component {
                     value={this.state.blogInfo.blogType}
                     onChange={this.handleBlogTypeChange}
                 >
-                    <MenuItem value={1} primaryText="技术分享" />
-                    <MenuItem value={2} primaryText="美食教程" />
-                    <MenuItem value={3} primaryText="宗教领悟" />
-                    <MenuItem value={4} primaryText="生活思考" />
+                    <MenuItem value={1} primaryText="技术分享(tech)" />
+                    <MenuItem value={2} primaryText="美食教程(cook)" />
+                    <MenuItem value={3} primaryText="宗教领悟(religion)" />
+                    <MenuItem value={4} primaryText="生活思考(life)" />
                 </SelectField>
                 <div>
                     <TextField
                         name="blogTitle"
                         hintText="博客路由地址"
-                        floatingLabelText="博客路由地址，导航Url地址"
+                        floatingLabelText="博客路由地址，导航Url地址，填写github文件名，无需后缀"
                         value={this.state.blogInfo.blogTitle}
                         onChange={this.handleInputChange}
                         style={{ width: '100%' }}

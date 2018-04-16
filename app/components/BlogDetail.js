@@ -63,7 +63,7 @@ class BlogDetail extends React.Component {
 
     render() {
         let backgroundUrl = this.state.blogInfo.blogBackground ? this.state.blogInfo.blogBackground:
-            'http://localhost:3001/blog/1489648251510';
+            '';
         let styleInfo = {
             backgroundImage: 'url("' + backgroundUrl + '")',
             backgroundColor: 'rgba(0, 0, 0, 0.5)',
@@ -89,6 +89,9 @@ class BlogDetail extends React.Component {
         };
 
         const rawHtml = this.converter.makeHtml(this.state.blogInfo.blogMarkdownContent);
+        let node = $(rawHtml);
+        node.find("code").addClass("hljs");
+        const htmlContent = $("<div />").append(node.clone()).html();
 
         return (
             <div>
@@ -141,7 +144,7 @@ class BlogDetail extends React.Component {
                                         marginTop: 15
                                     }}/>
                                     <div style={contentStyle}
-                                         dangerouslySetInnerHTML={{__html: rawHtml}}></div>
+                                         dangerouslySetInnerHTML={{__html: htmlContent}}></div>
                                     <Divider style={{
                                         backgroundColor: '#2b2b2b',
                                         marginTop: 15
